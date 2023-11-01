@@ -42,7 +42,7 @@ You provide a file containing potential targets to be assessed, and Recruiter wi
 Dentist
 -------
 Extract a list of usable hosts from JSON data. It requires the content of the "unique-id" param found in your JSON output from running Recruiter against your list of hosts, and will extract the usable host from the "full-id" param, clipping the unwanted string from the end:
-"unique-id":"ckji0gb5hom1mdsb8p7gmphu9ibe1sxoq","full-id":"www.host.apa.org.ckji0gb5hom1mdsb8p7gmphu9ibe1sxoq","
+"unique-id":"ckji0gb5hom1mdsb8p7gmphu9ibe1sxoq","full-id":"www.host.example.org.ji0gb5hom1mdsb8p7gmphu9ibe1sxoq","
 Usage:
 python3 dentist.py input.json string_to_remove
 
