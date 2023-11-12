@@ -9,18 +9,18 @@ import re
 import sys
 
 def usage():
-    print("Usage: " + sys.argv[0] + " <path_to_json_file> <string_to_remove>")
+    print("Usage: " + sys.argv[0] + " <path_to_json_file>")
     exit(1)
 
 # Check for cmdline arguments
 if (len(sys.argv[:]) < 2):
     usage()
-elif(not sys.argv[1] or not sys.argv[2]):
+elif(not sys.argv[1]):
     usage()
 
 # Assign arguments to variables
 json_file = sys.argv[1]
-string_to_remove = sys.argv[2]
+#string_to_remove = sys.argv[2]
 
 # Array to hold final output
 output_lines = []
@@ -43,7 +43,6 @@ with open(json_file, 'r') as input_file:
                 for data in json_data["data"]:
                     id_chars = data["full-id"]
                     targets += ["" . join([str(ch) for ch in id_chars])]
-
             else:
                 id_chars = json_content["full-id"]
                 targets += ["" . join([str(ch) for ch in id_chars])]
@@ -52,8 +51,6 @@ with open(json_file, 'r') as input_file:
             print("Error reading and parsing data from JSON file.")
 
         # Extract data
-        
-
         for target in targets:
             print(target)
             parts = target.split(".")

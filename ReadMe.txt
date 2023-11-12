@@ -43,13 +43,13 @@ python3 recruiter.py -o cmz5ed12vtc0000r7r5ggkx1zgoyyyyyb.oast.fun -f domains.tx
 
 Dentist
 -------
-Extract a list of usable hosts from JSON data. It requires the content of the "unique-id" param found in your JSON output from running Recruiter against your list of hosts, and will extract the usable host from the "full-id" param, clipping the unwanted string from the end:
+Extract a list of usable hosts from JSON data. It requires the exported JSON output of the DNS server, from running Recruiter against your list of hosts. It will extract the usable hostname from the "full-id" param, clipping the unwanted string from the end, ready for usage with Bouncer:
 "unique-id":"ckji0gb5hom1mdsb8p7gmphu9ibe1sxoq","full-id":"www.host.apa.org.ckji0gb5hom1mdsb8p7gmphu9ibe1sxoq","
 Usage:
-python3 dentist.py input.json string_to_remove
+python3 dentist.py json_datafile
 
 eg:
-python3 dentist.py input.json ckji0gb5hom1mdsb8p7gmphu9ibe1sxoq
+python3 dentist.py input.json
 
 Bouncer
 -------
