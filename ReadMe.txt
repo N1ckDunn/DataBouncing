@@ -5,15 +5,15 @@ Reconnaissance of useable channels can be carried out using the Recruiter (finds
 Exploitation of selected channels can be carried out by exfiltrating files using Bouncer (throws out the files) and Therapist (puts the received bits back together).
 
 
-recruiter.py	V0.1	Partially working, but fixes coming soon. You may get better results using Head_Hunterv2.sh.
-dentist.py	V1.0	Currently working and tested.
+recruiter.py	V0.2	Working PoC to check a list of hosts and their responses via the DNS bouncer.
+dentist.py	V1.0	Currently working and tested. Extracts the list of usable hosts from the DNS output.
 bouncer.py	V0.2	Working PoC for binary file transfer/exfiltration (see below). Further functionality to come.
 thetherapist.py	V0.2	Working PoC for reassembly of exfiltrated file (see below). Further functionality to come.
 
 
 Background
 ----------
-This is a PoC based on John and Dave's ideas outlined in https://thecontractor.io/Data-Bouncing
+This is a PoC based on John and Dave's ideas outlined in https://thecontractor.io/DataBouncing
 Read the URL for further information on how the technique works.
 
 Upcoming Changes and Improvements
@@ -38,11 +38,13 @@ Note that the server named in the -s parameter will be the server name provided 
 Recruiter
 ---------
 You provide a file containing potential targets to be assessed, and Recruiter will assess the viability of using them for data bouncing. The targets will be external domains that are whitelisted by the environment that you are planning to DataBounce from. After running Recruiter, he JSON output from interactsh ca be passed to Dentist to extract usable hostnames.
+Usage:
+python3 recruiter.py -o cmz5ed12vtc0000r7r5ggkx1zgoyyyyyb.oast.fun -f domains.txt -v
 
 Dentist
 -------
 Extract a list of usable hosts from JSON data. It requires the content of the "unique-id" param found in your JSON output from running Recruiter against your list of hosts, and will extract the usable host from the "full-id" param, clipping the unwanted string from the end:
-"unique-id":"ckji0gb5hom1mdsb8p7gmphu9ibe1sxoq","full-id":"www.host.example.org.ji0gb5hom1mdsb8p7gmphu9ibe1sxoq","
+"unique-id":"ckji0gb5hom1mdsb8p7gmphu9ibe1sxoq","full-id":"www.host.apa.org.ckji0gb5hom1mdsb8p7gmphu9ibe1sxoq","
 Usage:
 python3 dentist.py input.json string_to_remove
 

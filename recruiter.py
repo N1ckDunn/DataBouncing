@@ -11,6 +11,7 @@ import os
 import getopt
 import time
 import re
+import requests
 
 #from multiprocessing import Pool
 from multiprocessing import Process
@@ -29,7 +30,7 @@ oob_domain = ""	# No default for OOB domain
 def check_utilities():
 	# The following *nix utilities are needed
 	#utilities = ["curl", "parallel", "bc"]
-	utilities = ["curl", "bc"]
+	utilities = ["bc"]
 	
 	# Check that the utilities are present on the system
 	for utility in utilities:
@@ -42,7 +43,7 @@ def check_utilities():
 		if not path_fragment in str(sys_output):
 		
 			# If utility is not present get user consent to install
-			print("Script requires curl, and bc.")
+			print("Script requires bc.")
 			user_response = input(utility + " is not installed. Would you like to install it? (y/N) ").strip().lower()
 	        
 			if user_response.startswith('y'):
@@ -151,58 +152,60 @@ def process_domain(domain, current_host_number, domain_count, verbose, log_file,
 	# ToDo: only add this if it's actually missing - that way the user can insert http for some stuff
 	    
 	# This will be added to each of the headers
-	suffix = domain #+ ".oob.com" 
+	suffix = domain + "." + oob_domain 
 
 	# This header array will be used with curl for our nefarious purposes
-	headers = []
-	temp_headers = ["X-Forwarded-For: xff", "CF-Connecting_IP: cfcon.", "Contact: root@contact.",
-			"X-Real-IP: rip.", "True-Client-IP: trip.", "X-Client-IP: xclip.", "Forwarded: for=ff.",
-			"X-Originating-IP: origip.", "Client-IP: clip.", "Referer: ref.", "From: root@from."]
+	temp_headers = {"X-Forwarded-For": "xff.", "CF-Connecting_IP": "cfcon.", "Contact": "root@contact.",
+			"X-Real-IP": "rip.", "True-Client-IP": "trip.", "X-Client-IP": "xclip.", "Forwarded": "for=ff.",
+			"X-Originating-IP": "origip.", "Client-IP": "clip.", "Referer": "ref.", "From": "root@from."}
 	# ToDo: At some point, maybe consider getting the above from a config file?
 	# Add the domain and -H param onto the headers
-	for header in temp_headers:
-		header += domain
-		headers += ["-H", header]
+	for header in temp_headers.values():
+		header += suffix
 
 	# Due to its inconvenient construction, we'll build this one separately
-	wap_headers = ["-H", "X-Wap-Profile: http://wafp." + domain + "/wap.xml"] #".oob.com/wap.xml"]
+	wap_headers = {"X-Wap-Profile": "http://wafp." + domain + "/wap.xml"} 
 
 	# Set User agent, host, etc. as appropriate
-	curl_headers = []
-	temp_curl_headers = ["User-Agent: " + user_agent, "Host: host." + domain + "." + oob_domain, "Origin: " + origin, "Connection: close"]
-	# Add the -H param onto the headers
-	for header in temp_curl_headers:
-		header += domain
-		curl_headers += ["-H", header]
+	headers = {"User-Agent": user_agent, "Host": "host." + suffix, "Origin": origin, "Connection": "close"}
+	headers.update(temp_headers)
+	headers.update(wap_headers)
 
-	# Build the curl command from the headers and the additional data specified by the user
-	cmd_array = ["curl", "-i", "-s", "-k", "-X", "GET", "--max-time", "16"]
-	cmd_array += curl_headers
-	cmd_array += headers
-	cmd_array += wap_headers
-	cmd_array += ["http://" + domain + "/"]
+	# Build the request command to include all headers and the additional data specified by the user
+	response = None
+	try:
+		response = requests.get("http://" + domain + "/", headers=headers, timeout=10)
+	except requests.exceptions.HTTPError as http_err:
+		print("Error getting response from:	" + domain)
+		print(http_err)
+	except requests.exceptions.Timeout as tm_err:
+		print("Timeout waiting for response from:	" + domain)
+		print(tm_err)
+	except requests.exceptions.TooManyRedirects as rd_err:
+		print("Too many redirects getting response from:	" + domain)
+		print(rd_err)
+	except Exception as err:
+		print("Error getting response from:	" + domain)
+		print(err)
 
-	# Execute the curl command with the appropriate header array, built above
-	curl_output = subprocess.run(cmd_array, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-	    
+	# Get response from the request executed above
+	if not response is None:
+		output_code = response.status_code
+		json_output = response.json
+		resp_headers = response.headers
+		resp_content = response.content
+
+		print("Domain:	" + domain)
+		print("Response:	" + str(output_code))
+		if verbose == True:
+			print(resp_headers)
+
+		with open("targets.txt", "a") as target_log:
+			target_log.write(domain)
+
 	# Create a log message with the progress report
 	timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 	log_message = timestamp + "::Request sent to " + domain + "::" + str(current_host_number) + " of " + str(domain_count) + "::" + str(percentage_complete) + "% complete"
-	
-    # Check CURL output
-	lines = curl_output.split("\n")
-	targets = []
-
-    # Use regex to find output lines starting with >
-	filtered_lines = [line for line in lines if re.match(r'^>', line)]
-
-    # Now 'filtered_lines' contains the lines that start with '>'
-	for line in filtered_lines:
-		targets += line
-		print(line)
-		
-	with open("targets.txt", "a") as target_log:
-		target_log.write(targets + "\n")
 		
 	# Print the log message to the console
 	if verbose == True:
