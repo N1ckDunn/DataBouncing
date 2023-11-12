@@ -6,7 +6,7 @@ Exploitation of selected channels can be carried out by exfiltrating files using
 
 
 recruiter.py	V0.2	Working PoC to check a list of hosts and their responses via the DNS bouncer.
-dentist.py	V1.0	Currently working and tested. Extracts the list of usable hosts from the DNS output.
+dentist.py	V1.1	Currently working and tested. Extracts the list of usable hosts from the DNS output.
 bouncer.py	V0.2	Working PoC for binary file transfer/exfiltration (see below). Further functionality to come.
 thetherapist.py	V0.2	Working PoC for reassembly of exfiltrated file (see below). Further functionality to come.
 
