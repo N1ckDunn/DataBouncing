@@ -13,7 +13,7 @@ thetherapist.py	V0.2	Working PoC for reassembly of exfiltrated file (see below).
 
 Background
 ----------
-This is a PoC based on John and Dave's ideas outlined in https://thecontractor.io/DataBouncing
+This is a PoC based on John and Dave's ideas outlined in https://thecontractor.io/data-bouncing
 Read the URL for further information on how the technique works.
 
 Upcoming Changes and Improvements
