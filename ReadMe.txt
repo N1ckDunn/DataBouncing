@@ -34,6 +34,7 @@ The following cmd line params were used for interactsh client in order to get ap
 ./interactsh-client -s cmz5ed12vtc0000r7r5ggkx1zgoyyyyyb.oast.fun -sf your_session.file -asn -o test_data.json -json -v
 
 Note that the server named in the -s parameter will be the server name provided on the web page of the interactsh server. The example given above will not work for you and should be replaced by the value copied from your server.
+The list of usable values can subsequently be extracted from your DNS server.
 
 Recruiter
 ---------
