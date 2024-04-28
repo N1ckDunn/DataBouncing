@@ -1,7 +1,7 @@
 Note
 ====
-There is be an upcoming improved version of this code, written as a single standalone application in Go.
-Eventual medium to long-term aim is to release this, along with a GUI for each major platform, under the name Interocitor (see associated repository).
+There is going to be an upcoming improved version of this code, written as a single standalone application in Go.
+Eventual medium to long-term aim is to release this, along with a GUI for each major platform, under the name Interocitor (see associated repository at https://github.com/N1ckDunn/Interocitor).
 
 Data Bouncing
 =============
