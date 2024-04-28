@@ -1,3 +1,8 @@
+Note
+====
+There is be an upcoming improved version of this code, written as a single standalone application in Go.
+Eventual medium to long-term aim is to release this, along with a GUI for each major platform, under the name Interocitor (see associated repository).
+
 Data Bouncing
 =============
 These four scripts are used to bounce data between two endpoints, making use of DNS lookups against the content of some HTTP header types.
